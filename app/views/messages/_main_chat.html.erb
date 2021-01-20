@@ -1,27 +1,36 @@
+<%# 下記はメインチャットのヘッダー部分 %>
 <div class="chat-header">
   <div class="left-header">
     <div class="header-title">
-         <%= @room.name %>
+     <%= @room.name %>
+     <%# ↪︎この記述でメッセージ画面の左上にルーム名が表示される %>
     </div>
   </div>
   <div class="right-header">
     <div class="header-button">
-         <%= link_to "チャットを終了する", room_path(@room), method: :delete %>
+      <%= link_to "チャットを終了する", room_path(@room), method: :delete %>
+     <%# ↪︎下記の記述でチャットを終了するとチャットルームが削除される %>
     </div>
   </div>
 </div>
 
+<%# 下記はメインチャットのメッセージが表示される部分 %>
 <div class="messages">
- <%= render partial: 'message', collection: @messages %>
+  <%= render partial: 'message',collection: @messages %>
+  <%# collectionオブションを使うことで変数の数だけrenderで呼び出してくれるようになる %>
 </div>
 
-<div class="form">
+<%# 下記はチャット画面のフォームの場所 %>
+<%= form_with model: [@room, @message], class: 'form', local: true do |f| %>
+<%# ↪︎この＠roomには「指定したチャットルームの情報」、＠messageには空のインスタンスが入っている %>
   <div class="form-input">
-    <input class="form-message" placeholder= "type a message">
-     <label class="form-image">
+    <%= f.text_field :content, class: 'form-message', placeholder: 'type a message' %>
+      <%# ↪︎「placeholder」は文字をうっすら表示させたい時に利用する %>
+    <label class="form-image">
       <span class="image-file">画像</span>
-      <input type="file" class="hidden">
+      <%= f.file_field :image, class: 'hidden' %>
     </label>
+      <%# ↪︎「label」要素のおかげで画像を押しても「ファイルを選択」という不要な文字が出ない %>
   </div>
-  <input class="form-submit" type="submit" value="送信">
-</div>
+  <%= f.submit '送信', class: 'form-submit' %>
+<% end %>
